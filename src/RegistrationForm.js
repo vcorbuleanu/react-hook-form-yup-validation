@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -6,7 +6,6 @@ import {Form, Input, DatePicker, Button} from 'antd';
 
 const RegistrationForm = () => {
     const onSubmit = (data) => {
-        console.log(formState.isValid);
         console.log(data);
     };
 
@@ -22,9 +21,14 @@ const RegistrationForm = () => {
             : {}),
     });
 
-    const {handleSubmit, control, formState, getValues, trigger} = useForm({
+    const {handleSubmit, control, formState, getValues, resetField, trigger} = useForm({
         resolver: yupResolver(schema),
     });
+
+    useEffect(() => {
+        if (!showDob)
+            resetField('dob');
+    }, [showDob, resetField]);
 
     return (
         <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
@@ -66,6 +70,7 @@ const RegistrationForm = () => {
                                 field.onChange(event);
                                 trigger('email').then(); // Trigger validation
                                 setShowDob(!formState.errors.email && getValues('email') !== '');
+                                console.log(getValues());
                             }}
                             onBlur={() => {
                                 trigger('email').then(); // Trigger validation on blur
