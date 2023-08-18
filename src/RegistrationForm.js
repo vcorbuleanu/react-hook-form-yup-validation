@@ -6,6 +6,7 @@ import {Form, Input, DatePicker, Button} from 'antd';
 
 const RegistrationForm = () => {
     const onSubmit = (data) => {
+        console.log(formState.isValid);
         console.log(data);
     };
 
@@ -21,7 +22,7 @@ const RegistrationForm = () => {
             : {}),
     });
 
-    const {handleSubmit, control, formState, trigger} = useForm({
+    const {handleSubmit, control, formState, getValues, trigger} = useForm({
         resolver: yupResolver(schema),
     });
 
@@ -64,11 +65,11 @@ const RegistrationForm = () => {
                             onChange={(event) => {
                                 field.onChange(event);
                                 trigger('email').then(); // Trigger validation
-                                setShowDob(!formState.errors.email);
+                                setShowDob(!formState.errors.email && getValues('email') !== '');
                             }}
                             onBlur={() => {
                                 trigger('email').then(); // Trigger validation on blur
-                                setShowDob(!formState.errors.email);
+                                setShowDob(!formState.errors.email && getValues('email') !== '');
                             }}
                         />
                     )}
