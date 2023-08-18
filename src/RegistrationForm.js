@@ -13,13 +13,19 @@ const RegistrationForm = () => {
 
     const schema = yup.object().shape({
         username: yup.string().required('Username is required'),
-        email: yup.string().email('Invalid email').required('Email is required'),
+        email: yup.string().email('Invalid email'),//.required('Email is required'),
         ...(showDob
             ? {
                 dob: yup.date().nullable().required('Date of Birth is required'),
             }
             : {}),
     });
+
+    // You could verify the visibility of multiple elements in here, and use this function in the onBlur and onChange
+    // of all the elements in your form which are dependencies for other elements.
+    const checkElementsVisibility = () => {
+        setShowDob(!formState.errors.email && getValues('email') !== '');
+    }
 
     const {handleSubmit, control, formState, getValues, resetField, trigger} = useForm({
         resolver: yupResolver(schema),
@@ -29,6 +35,11 @@ const RegistrationForm = () => {
         if (!showDob)
             resetField('dob');
     }, [showDob, resetField]);
+
+    // This will show us the validity of the form every time formState changes.
+    useEffect(() => {
+        console.log('Form Validity: ', formState.isValid);
+    }, [formState]);
 
     return (
         <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
@@ -45,10 +56,13 @@ const RegistrationForm = () => {
                             {...field}
                             onChange={(event) => {
                                 field.onChange(event);
-                                trigger('username').then(); // Trigger validation
+                                trigger('username').then(); // Trigger validation onChange
+                                checkElementsVisibility();
+
                             }}
                             onBlur={() => {
-                                trigger('username').then(); // Trigger validation on blur
+                                trigger('username').then(); // Trigger validation onBlur
+                                checkElementsVisibility();
                             }}
                         />
                     )}
@@ -68,13 +82,12 @@ const RegistrationForm = () => {
                             {...field}
                             onChange={(event) => {
                                 field.onChange(event);
-                                trigger('email').then(); // Trigger validation
-                                setShowDob(!formState.errors.email && getValues('email') !== '');
-                                console.log(getValues());
+                                trigger('email').then(); // Trigger validation onChange
+                                checkElementsVisibility();
                             }}
                             onBlur={() => {
-                                trigger('email').then(); // Trigger validation on blur
-                                setShowDob(!formState.errors.email && getValues('email') !== '');
+                                trigger('email').then(); // Trigger validation onBlur
+                                checkElementsVisibility();
                             }}
                         />
                     )}
@@ -95,10 +108,10 @@ const RegistrationForm = () => {
                                 style={{width: '100%'}}
                                 onChange={(date) => {
                                     field.onChange(date);
-                                    trigger('dob').then(); // Trigger validation
+                                    trigger('dob').then(); // Trigger validation onChange
                                 }}
                                 onBlur={() => {
-                                    trigger('dob').then(); // Trigger validation on blur
+                                    trigger('dob').then(); // Trigger validation onBlur
                                 }}
                             />
                         )}
