@@ -61,6 +61,7 @@ const RegistrationForm = () => {
 
                             }}
                             onBlur={() => {
+                                field.onBlur();
                                 trigger('username').then(); // Trigger validation onBlur
                                 checkElementsVisibility();
                             }}
@@ -86,6 +87,7 @@ const RegistrationForm = () => {
                                 checkElementsVisibility();
                             }}
                             onBlur={() => {
+                                field.onBlur();
                                 trigger('email').then(); // Trigger validation onBlur
                                 checkElementsVisibility();
                             }}
@@ -111,6 +113,7 @@ const RegistrationForm = () => {
                                     trigger('dob').then(); // Trigger validation onChange
                                 }}
                                 onBlur={() => {
+                                    field.onBlur();
                                     trigger('dob').then(); // Trigger validation onBlur
                                 }}
                             />
